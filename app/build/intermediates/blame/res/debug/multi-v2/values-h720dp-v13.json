@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/msaleem/Downloads/Android-NYTimes-Sample-master/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
+            "outputFile": "/Users/msaleem/AndroidStudioProjects/Android-NYTimes-Sample/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
-                    "source": "/Users/msaleem/.gradle/caches/transforms-2/files-2.1/32a5f488e66429ca7b5dba6994035c04/appcompat-1.1.0/res/values-h720dp-v13/values-h720dp-v13.xml",
+                    "source": "/Users/msaleem/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-alpha3.aar/f5c2db06d39b813694113e8080813ad6/res/values-h720dp-v13/values-h720dp-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

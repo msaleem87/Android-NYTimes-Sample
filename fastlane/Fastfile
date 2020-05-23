@@ -1,0 +1,250 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+ lane :distribute_firebase_g_drive do |values|
+
+            # Get flavor value
+            flavorTypeValue = values[:flavorType]
+            puts "***** Flavor type: " + flavorTypeValue
+
+            # Build release app
+            build_app_release_flavor(flavorTypeValue)
+
+            # Get APK path
+            apkPath = get_apk_file_path(flavorTypeValue)
+            puts "***** APK path: " + apkPath
+
+            # Get release notes path
+            releaseNotesPath = get_release_notes_path
+            puts "***** Release notes path: " + releaseNotesPath
+
+             if flavorTypeValue == 'Production'
+                folderId = "1u4ETxnOw4_fcrKoSGLSljP4cZgdweHoN2Ck"
+             else
+                folderId = "1u4ETxnOw4_fcrKoSGLSljP4cZgdweHoN2Ck"
+              end
+
+             folderTitle = "V " + get_app_version_code + " - " + get_app_version_name
+             puts "***** Folder title: " + folderTitle
+
+             # Create Google drive folder
+             create_google_drive_folder_fun(folderId,folderTitle)
+
+             folderID = Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GDRIVE_CREATED_FOLDER_ID]
+             folderURL  = Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GDRIVE_CREATED_FOLDER_URL]
+
+             puts "***** Folder ID: " + folderID
+             puts "***** Folder URL: " + folderURL
+
+            # Upload to G drive
+            upload_to_google_drive_fun(apkPath,releaseNotesPath,folderID)
+
+
+            # Upload to Firebase
+             upload_to_firebase(apkPath,releaseNotesPath)
+
+            # Send Microsoft team message
+            send_message_to_microsoft_teams(flavorTypeValue,folderURL)
+
+            # send gmail email
+            #send_gmail_email(values)
+
+end
+
+
+def send_gmail_email(values)
+ gmail(
+    username: "",
+    password: "",
+    to: get_recipients(get_testers_path),
+    subject: "Dealer App Build",
+    body: "Connected to #{values[:flavorType]} environment<br/>" + get_file_as_string("../app/release_notes.txt","<br/>") + "<br/>" + get_build_details_for_email(values)
+  )
+end
+
+
+def upload_to_firebase(apkPath,releaseNotesPath)
+firebase_app_distribution(
+ app: "1:682258341105:android:1d438b44ee277b784f9d50",
+ testers_file: "app/testers.txt",
+ groups_file: "app/groups.txt",
+ release_notes_file: releaseNotesPath,
+ firebase_cli_path: "/usr/local/bin/firebase",
+ ipa_path: apkPath)
+end
+
+
+
+def upload_to_google_drive_fun(apkPath,releaseNotesPath,folderID)
+upload_to_google_drive(
+  drive_keyfile: 'app/drive_key.json',
+  service_account: false,
+  folder_id: folderID,
+  upload_files: [apkPath, releaseNotesPath]
+)
+end
+
+
+
+def create_google_drive_folder_fun(folderId,folderTitle)
+create_google_drive_folder(
+   drive_keyfile: 'app/drive_key.json',
+  folder_id: folderId,
+  folder_title: folderTitle
+)
+end
+
+#
+# This method returns the app_version_code
+def get_app_version_code()
+  return get_version_code(
+    #app_folder_name:"project"
+    gradle_file_path:"app/build.gradle",
+    ext_constant_name:"versionCode"
+  )
+end
+
+def get_app_version_name()
+  return get_version_code(
+    #app_folder_name:"project"
+    gradle_file_path:"app/build.gradle",
+    ext_constant_name:"versionName"
+  )
+end
+
+def get_apk_file_path(flavor)
+  return "app/build/outputs/apk/"+flavor+"/release/"+"DealerApp-"+get_app_version_code+"-"+flavor+"-release.apk"
+end
+
+def get_release_notes_path()
+return "app/release_notes.txt"
+end
+
+
+def get_testers_path()
+	return "../app/testers.txt"
+end
+
+
+
+ # Microsoft Teams Custom messages
+def send_message_to_microsoft_teams(buildType,buildURL)
+        teams_url = ""
+
+	  teams(
+	  	theme_color:"#1B5E20",
+	    title: "Dealer App Build",
+	    message: get_file_as_string("../app/release_notes.txt",""),
+		facts:[
+
+		      {
+		        "name"=>"Build Date",
+		        "value"=>"#{Time.new.year}/#{Time.new.month}/#{Time.new.day}"
+		      },
+
+		      {
+		        "name"=>"Build Type",
+		        "value"=>buildType
+		      },
+
+		      {
+		        "name"=>"Version no",
+		        "value"=>get_app_version_code
+		      },
+
+		      {
+		        "name"=>"Version name",
+		        "value"=>get_app_version_name
+		      },
+
+		      {
+		        "name"=>"Firebase invitation link",
+		        "value"=>"https://appdistribution.firebase.dev/i/gT6CeHHx"
+		      },
+
+		      {
+              	"name"=>"Google drive invitation link",
+                "value"=>"https://drive.google.com/drive/folders/1tbC63HiCdsadasewqzrkTds3Nr-dsadas?usp=sharing"
+              },
+
+		      {
+		        "name"=>"Result",
+		        "value"=>"Success"
+		      },
+
+		      {
+		        "name"=>"Deployer",
+		        "value"=>"M.Saleem"
+		      }
+		    ],
+	    teams_url: teams_url
+	  )
+end
+
+
+def get_build_details_for_email(values)
+	space = "&nbsp;&nbsp;"
+	line_break_tag = "<br/>"
+
+	buid_date = "<b>Build Date:</b>" + space + "#{Time.new.year}/#{Time.new.month}/#{Time.new.day}" + line_break_tag
+	build_type = "<b>Build Type:</b>" + space + "#{values[:flavorType]}" + line_break_tag
+	version_number = "<b>Version no:</b>" + space + "#{get_app_version_code}" + line_break_tag
+	version_name = "<b>Version name:</b>" + space + "#{get_app_version_name}" + line_break_tag
+	firebase_invitation_link = "<b>Firebase invitation link:</b>" + space + "https://appdistribution.firebase.dev/i/gT6CeHHx" + line_break_tag
+	google_drive_invitation_link = "<b>Google drive invitation link:</b>" + space + "https://drive.google.com/drive/folders/ddweqwegsdfwre-rewrwerdsfsdf?usp=sharing" + line_break_tag
+	result = "<b>Result:</b>" + space + "Success" + line_break_tag
+	deployer = "<b>Deployer:</b>" + space + "M.Saleem" + line_break_tag
+
+	details = buid_date + build_type + version_number + version_name + firebase_invitation_link + google_drive_invitation_link + result + deployer
+	return details
+
+end
+
+  # Get file content
+ def get_file_as_string(filename, htmlTag)
+      data = ''
+      f = File.open(filename, "r")
+      f.each_line do |line|
+          data +=  line + htmlTag
+      end
+
+      return  data
+  end
+
+# This method returns an array
+ def get_recipients(file_path)
+ 	data = ''
+      f = File.open(file_path, "r")
+      f.each_line do |line|
+          data +=  line
+      end
+
+      data_arry = data.split(",")
+      return data_arry
+ end
+
+
+def build_app_release_flavor(flavor)
+   gradle(
+          task: "assemble",
+          flavor: flavor,
+          build_type: "Release"
+         )
+      end
+end

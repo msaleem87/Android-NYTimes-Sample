@@ -6,11 +6,11 @@
 
         <variable
             name="article"
-            type="com.nytimes.android.data.local.entity.ArticleEntity" />
+            type="com.nytimes.articles.data.local.entity.ArticleEntity" />
     </data>
 
 
-    <androidx.cardview.widget.CardView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -78,5 +78,5 @@
                     android:typeface="sans" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </android.support.v7.widget.CardView>
 </layout>

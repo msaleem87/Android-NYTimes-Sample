@@ -1,0 +1,3 @@
+fastlane distribute_firebase_g_drive flavorType:Production
+
+fastlane distribute_firebase_g_drive flavorType:Uat

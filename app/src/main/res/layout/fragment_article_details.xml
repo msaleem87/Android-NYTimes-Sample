@@ -6,7 +6,7 @@
 
         <variable
             name="articleDetailViewModel"
-            type="com.nytimes.android.viewmodel.ArticleDetailsViewModel" />
+            type="com.nytimes.articles.viewmodel.ArticleDetailsViewModel" />
     </data>
 
     <RelativeLayout
@@ -28,7 +28,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="@dimen/common_margin"
                 android:orientation="vertical">
 

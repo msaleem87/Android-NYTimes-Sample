@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.001396">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: assembleProductionRelease" time="65.483134">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: get_version_code" time="0.007153">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: get_version_code" time="0.002009">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: get_version_code" time="0.002111">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: create_google_drive_folder" time="1.806915">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: upload_to_google_drive" time="30.240044">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: firebase_app_distribution" time="42.146328">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: get_version_code" time="0.001787">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: get_version_code" time="0.001686">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: teams" time="0.702301">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: get_version_code" time="0.002205">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: get_version_code" time="0.001649">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="13: gmail" time="2.807018">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
